@@ -1,0 +1,1798 @@
+<html>
+	<head>
+		<title>Resilient_Coasts_Demo</title>
+		<script src='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.js'></script>
+		<link href='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css' rel='stylesheet' />
+		<script src='https://code.jquery.com/jquery-3.4.1.min.js'></script>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<style>
+		body { margin:0; padding: 0px; font-family: sans-serif; }
+
+		#wrapper{
+		  width:100%;
+		  height:100%;
+		}
+				#sidebar{
+					position: absolute;
+					width: 200px;
+					height: 100%;
+					background:#223149;
+		      left:-200px;
+
+					transition: all 500ms linear;
+					z-index: 5;
+		      vertical-align: center;
+				}
+				#sidebar.active{
+					left:0px;
+				}
+				#sidebar h1{
+					font-size: 24px;
+					color: #000033;
+					padding:15px 10px;
+				}
+				#sidebar ul li {
+					color: rgba(230,230,230,0.9);
+					list-style:none;
+					padding:15px 10px;
+					border-bottom: 1px solid rgba(100, 100, 100, 0.3);
+				}
+				#sidebar .toggle-btn {
+					position: absolute;
+					left:220px;
+					top:50px;
+				}
+				#sidebar .toggle-btn span{
+					display:block;
+					width:30px;
+					height:5px;
+					background:#000033;
+					margin: 5px 0px;
+				}
+
+				#sidebar .bottonBtn{
+					position: absolute;
+					bottom: 0;
+		      padding: 0 0 20 10;
+				}
+					#map {
+						position:absolute;
+						top:0;
+						bottom:0;
+						width:100%;
+						transition: all 500ms linear;
+					}
+
+						.mapboxgl-popup-content{
+							max-width: 540;
+							position: relative;
+							background: #fff;
+							border-radius:3px;
+							padding: 10px 10px 10px;
+							box-shadow: 0 1px 2px rgba(0,0,0,0.10);
+							pointer-events: auto;
+
+						}
+
+					.button1{
+					 display:inline-block;
+					 padding:0.35em 1.2em;
+					 border:0.1em solid #FFFFFF;
+					 margin:0 0.3em 0.3em 0;
+					 border-radius:0.12em;
+					 box-sizing: border-box;
+					 text-decoration:none;
+					 font-family:'Roboto',sans-serif;
+					 font-weight:300;
+					 color:#FFFFFF;
+					 text-align:center;
+					 transition: all 0.2s;
+					}
+					.button1:hover{
+					 color:#000000;
+					 background-color:#FFFFFF;
+					}
+
+				.map-overlay {
+				font: 8px/12px 'Roboto',sans-serif;
+				position: absolute;
+				width: 100%;
+				bottom: 40px;
+				left: 220px;
+				padding: 10px;
+				display: none;
+				}
+
+				.map-overlay .map-overlay-inner {
+				background-color: #fff;
+				box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+				border-radius: 3px;
+				padding: 10px;
+				margin-bottom: 10px;
+
+				}
+
+				.map-overlay h2 {
+				line-height: 14px;
+				display: block;
+				margin: 0 0 10px;
+				}
+
+				.map-overlay input {
+				background-color: transparent;
+				display: inline-block;
+				width: 100%;
+				position: relative;
+				margin: 0;
+				cursor: ew-resize;
+				}
+
+				.eleInfo {
+		  position: absolute;
+		  font-family: sans-serif;
+		  margin-top: 5px;
+			display: none;
+		  width: 100%;
+		  border: 0px solid black;
+		  font-size: 12px;
+		  color: #222;
+		  background-color: #fff;
+		}
+
+		.accordion{
+		cursor: pointer;
+		text-align: left;
+		transition: 0.4s;
+		font-family:'Roboto',sans-serif;
+		 font-weight:300;
+		 color:#FFFFFF;
+		background-color: white;
+		overflow: auto;
+		width: 100%;
+		}
+		.accordion2{
+		cursor: pointer;
+		text-align: left;
+		transition: 0.4s;
+		font-family:'Roboto',sans-serif;
+		 font-weight:300;
+		 color:#FFFFFF;
+		overflow: auto;
+		background-color: white;
+		}
+
+		.active .accordion:hover{
+			background-color: #ccc;
+		}
+
+		.panel {
+			font-family:'Roboto',sans-serif;
+			 font-weight:150;
+			 color:#FFFFFF;
+			background-color: white;
+			text-align: left;
+			display: none;
+			overflow-y: auto;
+
+		}
+
+		.panel2 {
+			font-family:'Roboto',sans-serif;
+			 font-weight:150;
+			 color:#FFFFFF;
+			background-color: white;
+			text-align: left;
+			display: none;
+			overflow-y: auto;
+			padding-left: 20px;
+		}
+
+		.splashUnderlay {
+		position: fixed;
+		text-align: center;
+		left:0px;
+		top: 0px;
+		width:100%;
+		height:100%;
+		z-index:8;
+		background-color: rgb(0,0,0);
+		background-color: rgba(0,0,0, 0.8);
+		transition: 0.5;
+		}
+
+		.ImgSplash {
+		position: relative;
+		display: block;
+		vertical-align: middle;
+		top:50%;
+		transform: translateY(-50%);
+		z-index:10;
+		transition: 0.5;
+		padding-bottom:56.25%;
+		}
+
+		.ImgSplash img{
+		  vertical-align: middle;
+		  position: absolute;
+			width: 100%;
+			height: 100%;
+		  left: 0;
+
+			background-color: rgba(0, 0, 0, 0);
+			transition: 0.5;
+		  object-fit: contain;
+		}
+
+		.ImgSplash .closebtn{
+			position: fixed;
+			color: #FFFFFF;
+			top:10px;
+			right:45px;
+			font-size: 60px;
+			z-index:15;
+			transition: 0.5;
+			display: none;
+		}
+
+		.Textoverlay {
+		font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+		position: fixed;
+		width: 20%;
+		bottom: 40px;
+		right: 50px;
+		padding: 10px;
+		z-index:8;
+		display: none;
+		}
+
+		.Textoverlay .Textoverlay-inner {
+		background-color: #fff;
+		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+		border-radius: 3px;
+		padding: 10px;
+		margin-bottom: 10px;
+
+		}
+
+		.distance-container{
+			position: absolute;
+			top: 10px;
+			right: 10px;
+			z-index:2;
+		}
+
+		.distance-container > * {
+			background-color: rgba(0, 0, 0, 0.6);
+			color: #fff;
+			font-size: 11px;
+			line-height: 18px;
+			display: block;
+			padding: 5px 10px;
+			border-radius: 3px;
+		}
+
+		.container { width:190px; height: 50%; overflow-y: auto; text-align: center;}
+
+		.loader {
+			position:absolute;
+			border: 16px solid #223149;
+			border-top: 16px solid #f09000;
+			border-radius: 50%;
+			top: 50%;
+			left: 50%;
+			width:120px;
+			height:120px;
+			margin: -76px 0 0 -76px;
+			z-index: 20;
+			-webkit-animation: spin 2s linear infinite;
+			animation: spin 2s linear infinite;
+		}
+
+		@keyframes spin {
+			0% {transform: rotate(0deg);}
+			100% {transform: rotate(360deg);}
+		}
+		@-webkit-keyframes spin {
+			0% {-webkit-transform: rotate(0deg);}
+			100% {-webkit-transform: rotate(360deg);}
+		}
+		.imglogo{
+		position: static;
+		width:90%;
+		top:5%;
+		}
+	</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+<div class="loader" id="loading"></div>
+
+	<div id="textholder" class="Textoverlay">
+		<div class="Textoverlay-inner">
+		<span></span><label id="TextInfo"></label>
+	</div>
+</div>
+
+		<!-- SplashScreen -->
+ <div id ="splash1" class="splashUnderlay">
+		<div id ="splash2" class="ImgSplash">	<img src="img/resilentCoastSplash2.png">
+			<a id="xbtn" href ="javascript:void(0)" class="closebtn" onclick="closeSplash()">&times;</a>
+		</div></div>
+
+	<!-- SIDE BAR SETUP -->
+
+	<div class="sidebar" id="sidebar">
+		<div class="toggle-btn" onclick="toggleSidebar()">
+				<span></span>
+				<span></span>
+				<span></span>
+				</div>
+
+				<div id="timeline" class="map-overlay top">
+				<div class="map-overlay-inner">
+				<h2>Sea Level Rise</h2>
+				<label id="meters"></label>
+				<input id="slider" type="range" min="0" max="3" step="1" value="0">
+			</div></div>
+
+			<div id="timeline2" class="map-overlay top">
+			<div class="map-overlay-inner">
+			<h2>Flood Events</h2>
+			<label id="area"></label>
+			<input id="slider2" type="range" min="0" max="2" step="1" value="0">
+		</div></div>
+
+		<div id="timeline3" class="map-overlay top">
+		<div class="map-overlay-inner">
+		<h2>Global Mangrove Watch</h2>
+		<label id="grow"></label>
+		<input id="slider3" type="range" min="0" max="6" step="1" value="0">
+	</div></div>
+		<!--<div class="map-overlay-inner">
+				<div id="legend" class="legend">
+					<div class="bar"></div>
+					<div>Meters (m) </div>
+				</div>
+			</div>-->
+
+	<h1> <img src='img/RC_Logo_white.png' class="imglogo"></h1>
+
+<!--HTML FOR MENU SELECTIONS-->
+<div class="container">
+		<button class="accordion">Human</button>
+			<div class="panel">
+					<input id="layer1" type="checkbox" onclick="daSindh()"> Sindh District <br>
+					<input id="layer2" type="checkbox" onclick="daSet()"> Settlements <br>
+					<input id="layer3" type="checkbox" onclick="daRoad()"> Roads <br>
+					<input id="layer4" type="checkbox" onclick="daRegu()"> Regulators <br>
+					<input id="layer5" type="checkbox"  onclick="daIrrigate()"> Irrigation System <br>
+					<input id="layer6" type="checkbox" onclick="dalbod()"> LBOD Drainage <br>
+				<input class="accordion2" id="layer7" type="checkbox" onclick="daDrain()"> Outfall Drains
+				<div class="panel2">
+					<input id="layer8" type="checkbox" onclick="daDrain1()"> Sujawal<br>
+					<input id="layer9" type="checkbox" onclick="daDrain2()"> Jati <br>
+					<input id="layer10" type="checkbox" onclick="daDrain3()"> Karo Gongro <br>
+					<input id="layer11" type="checkbox" onclick="daDrain4()"> Malkani <br>
+					<input id="layer12" type="checkbox" onclick="daDrain5()"> Nagan Dhoro
+				</div><br>
+					<input id="layer13" type="checkbox" onclick="daLevee()"> Levee <br>
+		</div><br><br>
+
+		<button class="accordion">Natural</button>
+		<div class="panel">
+				<input id="layer14" type="checkbox" onclick="daTimeline()"> Sea Rise <br>
+				<input id="layer15" type="checkbox" onclick="daFlow()"> Flood Events <br>
+				<!--	<div class="panel2">
+						<input id="layer24" type="checkbox" onclick="davirrs1()"> VIRRS Permanent Water <br>
+						<input id="layer25" type="checkbox" onclick="davirrs2()"> VIIRS Flood Extnet <br>
+						<input id="layer26" type="checkbox" onclick="davirrs3()"> Landsat Flood Maximum <br>
+						<div> -->
+				<input id="layer24" type="checkbox" onclick="daGMW()"> GMW <br>
+				<input id="layer16" type="checkbox" onclick="daLake()"> Lakes <br>
+				<input id="layer17" type="checkbox" onclick="daMang()"> Mangrove Plantations <br>
+				<input id="layer18" type="checkbox" onclick="daFor()"> Forestation<br>
+				<input id="layer19" type="checkbox" onclick="daDepres()"> Geo Depressions <br>
+		</div><br><br>
+
+		<button class="accordion">Multimedia</button>
+		<div class="panel">
+				<input id="layer20" type="checkbox" onclick="daVid1()"> Videos <br>
+				<input id="layer21" type="checkbox" onclick="daImage()"> SLR Figure <br>
+		</div> <br><br>
+</div>
+
+<div class="bottonBtn">
+
+<div class ="eleInfo" id="disBox">
+<div>Distance: <span id="distance"></span></div>
+</div>
+
+<div class ="eleInfo" id="locaBox">
+<div>Longitude: <span id="lng"></span></div>
+<div>Latitude: <span id="lat"></span></div>
+<div>Elevation: <span id="ele"></span></div>
+</div>
+
+<br><br><br><br>
+
+<input id="layer22" type="checkbox" onclick="daLoca()"><label style="color:white;"> Location Tool </label><br>
+<input id="layer23" type="checkbox" onclick="daDist()"><label style="color:white;"> Distance Tool </label><br>
+	</div>
+
+	</div>
+
+<script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
+
+	<div id='map'></div>
+</div>
+
+	<script>
+
+	/// MAPBOX LOAD, STYLE & START POSITION
+
+	var bounds = [
+		[66.650221, 23.662118], //Southwest
+		[69.767938, 25.463115] //NorthEast
+	];
+
+	mapboxgl.accessToken = 'pk.eyJ1IjoiZm9vbGRvbWUiLCJhIjoiY2pxcHJyb2c1MDBzajQzbzZoM2dlaHRkeiJ9.CDXrbrpZqfi6A5bg5mX9TA';
+	const map = new mapboxgl.Map({
+	container: 'map',
+	style: 'mapbox://styles/fooldome/cklgzeaq9039i18o1nrzumbkb',
+	center: [67.901, 24.307],
+	zoom:9,
+	//pitch: 78.23,
+	//bearing: 25.31,
+	maxBounds: bounds,
+	antialias: true
+	});
+
+	map.addControl(new mapboxgl.NavigationControl());
+
+	var x = false;
+	toggleSidebar();
+
+	function toggleSidebar(){
+		if(x == false){
+			document.getElementById("sidebar").style.marginLeft='200';
+			//document.getElementById("map").style.marginLeft='200';
+		x = true;
+	} else {
+			document.getElementById("sidebar").style.marginLeft='0';
+		//	document.getElementById("map").style.marginLeft='0';
+		x = false;
+	}
+}
+
+function closeSplash(){
+	document.getElementById("splash1").style.width="0%";
+	document.getElementById("splash2").style.width="0%";
+	document.getElementById("xbtn").style.display="none";
+}
+
+// LOAD TILESETS (RESILENT COAST DATA) ONTO MAP
+
+map.on('load', function(){
+	map.addSource('slrbathtub3mv4-cg6vkd',{
+		'type': 'raster',
+		'url': 'mapbox://fooldome.a4rpyx80'
+	});
+});
+
+map.on('load', function(){
+	map.addSource('3m',{
+			'type': 'vector',
+			'url': 'mapbox://fooldome.2zefmzjm'
+		});
+		map.addLayer({
+			'id': '3m',
+			'type': 'fill',
+			'source':  '3m',
+			'paint': {'fill-color' :'#387ae0'},
+			'layout': { 'visibility': 'none'},
+			'source-layer' : 'inundation3m_contour_Jati-aq1mb0'
+		})
+
+	});
+
+	map.on('load', function(){
+		map.addSource('2m',{
+				'type': 'vector',
+				'url': 'mapbox://fooldome.c7vjnk8t'
+			});
+			map.addLayer({
+				'id': '2m',
+				'type': 'fill',
+				'source':  '2m',
+				'paint': {'fill-color' :'#26549c'},
+				'layout': { 'visibility': 'none'},
+				'source-layer' : 'inundation2m_contour_Jati-5tnxpb'
+			})
+
+		});
+
+map.on('load', function(){
+	map.addSource('1m',{
+			'type': 'vector',
+			'url': 'mapbox://fooldome.0km93nso'
+		});
+		map.addLayer({
+			'id': '1m',
+			'type': 'fill',
+			'source':  '1m',
+			'paint': {'fill-color' :'#15315e'},
+			'layout': { 'visibility': 'none'},
+			'source-layer' : 'inundation1m_contour_Jati-0oow9m'
+		})
+
+	});
+
+	map.on('load', function(){
+		map.addSource('0m',{
+				'type': 'vector',
+				'url': 'mapbox://fooldome.0obz5f1d'
+			});
+			map.addLayer({
+				'id': '0m',
+				'type': 'fill',
+				'source':  '0m',
+				'paint': {'fill-color' :'#081324'},
+				'layout': { 'visibility': 'none'},
+				'source-layer' : 'inundation0m_contour_Jati-aevtgn'
+			})
+
+		});
+		map.on('load', function(){
+			map.addSource('VIIRS_20200927_20201001_Perma-b4hugr',{
+				'type': 'vector',
+				'url': 'mapbox://fooldome.aaaiszj4'
+			});
+
+			map.addLayer({
+				'id': 'VIIRS_20200927_20201001_Perma-b4hugr',
+				'type': 'fill',
+				'source':  'VIIRS_20200927_20201001_Perma-b4hugr',
+				'paint': {'fill-color' :'#33ebe2', 'fill-opacity': 0.7},
+				'layout': { 'visibility': 'none'},
+				'source-layer' : 'VIIRS_20200927_20201001_Perma-b4hugr'
+			})
+		});
+
+		map.on('load', function(){
+			map.addSource('VIIRS_20200927_20201001_Flood-bif3po',{
+				'type': 'vector',
+				'url': 'mapbox://fooldome.8ffkko2o'
+			});
+
+			map.addLayer({
+				'id': 'VIIRS_20200927_20201001_Flood-bif3po',
+				'type': 'fill',
+				'source':  'VIIRS_20200927_20201001_Flood-bif3po',
+				'paint': {'fill-color' :'#fd8326', 'fill-opacity': 0.7},
+				'layout': { 'visibility': 'none'},
+				'source-layer' : 'VIIRS_20200927_20201001_Flood-bif3po'
+			})
+		});
+
+		map.on('load', function(){
+			map.addSource('floodmax',{
+				'type': 'vector',
+				'url': 'mapbox://fooldome.6stdsb3p',
+				'maxzoom': 22,
+				'minzoom': 0
+			});
+
+			map.addLayer({
+				'id': 'floodmax',
+				'type': 'fill',
+				'source':  'floodmax',
+				'paint': {'fill-color' :'#da0707', 'fill-opacity': 0.7},
+				'layout': { 'visibility': 'none'},
+				'source-layer' : 'floodMaxCut-bw9qwi'
+			})
+		});
+
+		map.on('load', function(){
+			map.addSource('sd',{
+					'type': 'vector',
+					'url': 'mapbox://fooldome.845bi60i',
+					'maxzoom': 22,
+					'minzoom': 0
+				});
+				map.addLayer({
+					'id': 'sd',
+					'type': 'line',
+					'source':  'sd',
+					'paint': {'line-color' :'#1fff22', 'line-width': 2},
+					'layout': { 'visibility': 'none'},
+					'source-layer' : 'sd-6uk1wu'
+				})
+			});
+
+map.on('load', function(){
+	map.addSource('depres',{
+			'type': 'vector',
+			'url': 'mapbox://fooldome.97z1mqfx',
+			'maxzoom': 22,
+			'minzoom': 0
+		});
+		map.addLayer({
+			'id': 'depres',
+			'type': 'fill',
+			'source':  'depres',
+			'paint': {'fill-color' :'#000000'},
+			'layout': { 'visibility': 'none'},
+			'source-layer' : 'MergedSubUnamed-c29yd3'
+		})
+	});
+
+	map.on('load', function(){
+		map.addSource('lakes',{
+				'type': 'vector',
+				'url': 'mapbox://fooldome.2oa6tdt1',
+				'maxzoom': 22,
+				'minzoom': 0
+			});
+			map.addLayer({
+				'id': 'lakes',
+				'type': 'fill',
+				'source':  'lakes',
+				'paint': {'fill-color' :'#1aeef9'},
+				'layout': { 'visibility': 'none'},
+				'source-layer' : 'JatiLakes-an9k0p'
+			})
+		});
+
+		map.on('load', function(){
+			map.addSource('forest',{
+					'type': 'vector',
+					'url': 'mapbox://fooldome.c355biah',
+					'maxzoom': 22,
+					'minzoom': 0
+				});
+				map.addLayer({
+					'id': 'forest',
+					'type': 'fill',
+					'source':  'forest',
+					'paint': {'fill-color' :'#02691a'},
+					'layout': { 'visibility': 'none'},
+					'source-layer' : 'forestation-9z82f2'
+				})
+			});
+
+			map.on('load', function(){
+				map.addSource('mang',{
+						'type': 'vector',
+						'url': 'mapbox://fooldome.37b39ssw',
+						'maxzoom': 22,
+						'minzoom': 0
+					});
+					map.addLayer({
+						'id': 'mang',
+						'type': 'fill',
+						'source':  'mang',
+						'paint': {'fill-color' :'#07cf36'},
+						'layout': { 'visibility': 'none'},
+						'source-layer' : 'mangrove-bslpcz'
+					})
+				});
+
+				map.on('load', function(){
+					map.addSource('irrigate',{
+							'type': 'vector',
+							'url': 'mapbox://fooldome.azgyb10b',
+							'maxzoom': 22,
+							'minzoom': 0
+						});
+						map.addLayer({
+							'id': 'irrigate',
+							'type': 'line',
+							'source':  'irrigate',
+							'paint': {'line-color' :'#64fcd3', 'line-width': 4},
+							'layout': { 'visibility': 'none'},
+							'source-layer' : 'Irrigation_lyr-biiz7f'
+						})
+					});
+
+map.on('load', function(){
+	map.addSource('drain1',{
+			'type': 'vector',
+			'url': 'mapbox://fooldome.9iypvj7l',
+			'maxzoom': 22,
+			'minzoom': 0
+		});
+		map.addLayer({
+			'id': 'drain1',
+			'type': 'line',
+			'source':  'drain1',
+			'paint': {'line-color' :'#3c57d3', 'line-width': 4},
+			'layout': { 'visibility': 'none'},
+			'source-layer' : 'jati_drain-1261md'
+		})
+	});
+	map.on('load', function(){
+		map.addSource('drain2',{
+				'type': 'vector',
+				'url': 'mapbox://fooldome.55z5wjkq',
+				'maxzoom': 22,
+				'minzoom': 0
+			});
+			map.addLayer({
+				'id': 'drain2',
+				'type': 'line',
+				'source':  'drain2',
+				'paint': {'line-color' :'#3c57d3', 'line-width': 4},
+				'layout': { 'visibility': 'none'},
+				'source-layer' : 'jati_lil_drain-c6lkmr'
+			})
+		});
+		map.on('load', function(){
+			map.addSource('drain3',{
+					'type': 'vector',
+					'url': 'mapbox://fooldome.atvbh79g',
+					'maxzoom': 22,
+					'minzoom': 0
+				});
+				map.addLayer({
+					'id': 'drain3',
+					'type': 'line',
+					'source':  'drain3',
+					'paint': {'line-color' :'#3c57d3', 'line-width': 4},
+					'layout': { 'visibility': 'none'},
+					'source-layer' : 'Karo_Gongro_drain-22cxbn'
+				})
+			});
+			map.on('load', function(){
+				map.addSource('drain4',{
+						'type': 'vector',
+						'url': 'mapbox://fooldome.9v08o3bt',
+						'maxzoom': 22,
+						'minzoom': 0
+					});
+					map.addLayer({
+						'id': 'drain4',
+						'type': 'line',
+						'source':  'drain4',
+						'paint': {'line-color' :'#3c57d3', 'line-width': 4},
+						'layout': { 'visibility': 'none'},
+						'source-layer' : 'Malkani_drain-6cibbx'
+					})
+				});
+				map.on('load', function(){
+					map.addSource('drain5',{
+							'type': 'vector',
+							'url': 'mapbox://fooldome.34p3os9a',
+							'maxzoom': 22,
+							'minzoom': 0
+						});
+						map.addLayer({
+							'id': 'drain5',
+							'type': 'line',
+							'source':  'drain5',
+							'paint': {'line-color' :'#3c57d3', 'line-width': 4},
+							'layout': { 'visibility': 'none'},
+							'source-layer' : 'Nagan_dhoro_drain-7sieua'
+						})
+					});
+
+
+	map.on('load', function(){
+		map.addSource('LBOD',{
+				'type': 'vector',
+				'url': 'mapbox://fooldome.6lq7o10x',
+				'maxzoom': 22,
+				'minzoom': 0
+			});
+			map.addLayer({
+				'id': 'LBOD',
+				'type': 'line',
+				'source':  'LBOD',
+				'paint': {'line-color' :'#ffffff', 'line-width': 3},
+				'layout': { 'visibility': 'none'},
+				'source-layer' : 'LBOD_Drainage_Sysytem-5rrcuf'
+			})
+		});
+
+		map.on('load', function(){
+			map.addSource('1996',{
+				'type': 'vector',
+				'url': 'mapbox://fooldome.awmxwhbc',
+				'maxzoom': 22,
+				'minzoom': 0
+			});
+
+			map.addLayer({
+				'id': '1996',
+				'type': 'fill',
+				'source':  '1996',
+				'paint': {'fill-color' :'#9efe72', 'fill-opacity': 0.8},
+				'layout': { 'visibility': 'none'},
+				'source-layer' : '1996-c6433p'
+			})
+		});
+
+		map.on('load', function(){
+			map.addSource('2007',{
+				'type': 'vector',
+				'url': 'mapbox://fooldome.18g5c302',
+				'maxzoom': 22,
+				'minzoom': 0
+			});
+
+			map.addLayer({
+				'id': '2007',
+				'type': 'fill',
+				'source':  '2007',
+				'paint': {'fill-color' :'#9efe72', 'fill-opacity': 0.8},
+				'layout': { 'visibility': 'none'},
+				'source-layer' : '2007-5qmpgb'
+			})
+		});
+
+		map.on('load', function(){
+			map.addSource('2008',{
+				'type': 'vector',
+				'url': 'mapbox://fooldome.cbr0csju',
+				'maxzoom': 22,
+				'minzoom': 0
+			});
+
+			map.addLayer({
+				'id': '2008',
+				'type': 'fill',
+				'source':  '2008',
+				'paint': {'fill-color' :'#9efe72', 'fill-opacity': 0.8},
+				'layout': { 'visibility': 'none'},
+				'source-layer' : '2008-ca77u5'
+			})
+		});
+
+		map.on('load', function(){
+			map.addSource('2009',{
+				'type': 'vector',
+				'url': 'mapbox://fooldome.bo0rucyp',
+				'maxzoom': 22,
+				'minzoom': 0
+			});
+
+			map.addLayer({
+				'id': '2009',
+				'type': 'fill',
+				'source':  '2009',
+				'paint': {'fill-color' :'#9efe72', 'fill-opacity': 0.8},
+				'layout': { 'visibility': 'none'},
+				'source-layer' : '2009-6qv5i1'
+			})
+		});
+
+		map.on('load', function(){
+			map.addSource('2010',{
+				'type': 'vector',
+				'url': 'mapbox://fooldome.1s0fippz',
+				'maxzoom': 22,
+				'minzoom': 0
+			});
+
+			map.addLayer({
+				'id': '2010',
+				'type': 'fill',
+				'source':  '2010',
+				'paint': {'fill-color' :'#9efe72', 'fill-opacity': 0.8},
+				'layout': { 'visibility': 'none'},
+				'source-layer' : '2010-0z4oga'
+			})
+		});
+
+		map.on('load', function(){
+			map.addSource('2015',{
+				'type': 'vector',
+				'url': 'mapbox://fooldome.6ubk5exc',
+				'maxzoom': 22,
+				'minzoom': 0
+			});
+
+			map.addLayer({
+				'id': '2015',
+				'type': 'fill',
+				'source':  '2015',
+				'paint': {'fill-color' :'#9efe72', 'fill-opacity': 0.8},
+				'layout': { 'visibility': 'none'},
+				'source-layer' : '2015-87k3j2'
+			})
+		});
+
+		map.on('load', function(){
+			map.addSource('2016',{
+				'type': 'vector',
+				'url': 'mapbox://fooldome.dy2fh2cw',
+				'maxzoom': 22,
+				'minzoom': 0
+			});
+
+			map.addLayer({
+				'id': '2016',
+				'type': 'fill',
+				'source':  '2016',
+				'paint': {'fill-color' :'#9efe72', 'fill-opacity': 0.8},
+				'layout': { 'visibility': 'none'},
+				'source-layer' : '2016-23e8hz'
+			})
+		});
+
+
+		map.on('load', function(){
+			map.addSource('roads',{
+					'type': 'vector',
+					'url': 'mapbox://fooldome.brf0r1b2',
+					'maxzoom': 22,
+					'minzoom': 0
+				});
+				map.addLayer({
+					'id': 'roads',
+					'type': 'line',
+					'source':  'roads',
+					'paint': {'line-color' :'#ffd30f', 'line-width': 3},
+					'layout': { 'visibility': 'none'},
+					'source-layer' : 'NEWROAD-9dt3k7'
+				})
+			});
+
+			map.on('load', function(){
+				map.addSource('levee',{
+						'type': 'vector',
+						'url': 'mapbox://fooldome.08d2i7xo',
+						'maxzoom': 22,
+						'minzoom': 0
+					});
+					map.addLayer({
+						'id': 'levee',
+						'type': 'line',
+						'source':  'levee',
+						'paint': {'line-color' :'#cf0707', 'line-width': 5},
+						'layout': { 'visibility': 'none'},
+						'source-layer' : 'levee-4vrso5'
+					})
+				});
+
+		map.on('load', function(){
+			map.addSource('settlement',{
+					'type': 'vector',
+					'url': 'mapbox://fooldome.benggdno',
+					'maxzoom': 22,
+					'minzoom': 0
+				});
+				map.addLayer({
+					'id': 'settlement',
+					'type': 'circle',
+					'source':  'settlement',
+					'paint': {'circle-color' :'#f09000', 'circle-radius': 6},
+					'layout': { 'visibility': 'none'},
+					'source-layer' : 'settelments-dugtus'
+				})
+			});
+
+			map.on('load', function(){
+				map.addSource('regulate',{
+						'type': 'vector',
+						'url': 'mapbox://fooldome.58cfjq86',
+						'maxzoom': 22,
+						'minzoom': 0
+					});
+					map.addLayer({
+						'id': 'regulate',
+						'type': 'circle',
+						'source':  'regulate',
+						'paint': {'circle-color' :'#ac06f9', 'circle-radius': 8},
+						'layout': { 'visibility': 'none'},
+						'source-layer' : 'regulators-baryfq'
+					})
+				});
+
+// VIDEOS
+	map.on('load', function(e){
+		map.addSource('video1',{
+
+				'type': 'geojson',
+				'data':
+				{ 'type': 'FeatureCollection',
+				'features': [
+					{
+					'type': 'Feature',
+					'properties':
+					{
+						'description': "<iframe width='220' height='170' src='https://www.youtube.com/embed/ieeuRzvdAzQ' frameborder='0' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen></iframe>",
+						'icon' : 'cinema'
+					},
+				'geometry': {
+					'type': 'Point',
+					'coordinates':[67.440414, 24.138634]
+				}
+			},
+			{
+				'type': 'Feature',
+				 'properties':
+				{
+					'description':"<iframe width='220' height='170' src='https://www.youtube.com/embed/SU33udVRvpE' frameborder='0' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen></iframe>",
+			'icon' : 'cinema'},
+			'geometry': {
+				'type': 'Point',
+				'coordinates':[67.473317, 24.163563]
+			}
+		},
+		{
+			'type': 'Feature',
+			 'properties':
+			{
+				'description':"<iframe width='220' height='170' src='https://www.youtube.com/embed/vVqgA2-lwpM' frameborder='0' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen></iframe>",
+		'icon' : 'cinema'},
+		'geometry': {
+			'type': 'Point',
+			'coordinates':[67.424207, 23.990090]
+		}
+	},
+	{
+		'type': 'Feature',
+		 'properties':
+		{
+			'description':"<iframe width='220' height='170' src='https://www.youtube.com/embed/gF8CtBJy8js' frameborder='0' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen></iframe>",
+	'icon' : 'cinema'},
+	'geometry': {
+		'type': 'Point',
+		'coordinates':[67.562084, 23.928973]
+	}
+},
+
+	]
+
+	}})
+	map.addLayer({
+		'id': 'videos',
+		'type': 'symbol',
+		'source': 'video1',
+		'layout': { 'icon-image': '{icon}-15', 'icon-allow-overlap': false, 'visibility': 'none'}
+	})
+
+	//ONCE LAST LAYER LOADED HIDE LOAD ANIMATION & SHOW SPLASH SCREEN EXIT BUTTON
+	if(e.target.loaded){
+		document.getElementById("loading").style.display = 'none';
+		document.getElementById("xbtn").style.display = 'block';
+	}
+
+	});
+
+
+// ACCORDION MENU
+
+var acc = document.getElementsByClassName("accordion");
+var i;
+
+for (i = 0; i < acc.length; i++) {
+  acc[i].addEventListener("click", function() {
+    /* Toggle between adding and removing the "active" class,
+    to highlight the button that controls the panel*/
+    this.classList.toggle("active");
+
+    /* Toggle between hiding and showing the active panel*/
+    var panel = this.nextElementSibling;
+    if (panel.style.display === "block") {
+      panel.style.display = "none";
+    } else {
+      panel.style.display = "block";
+    }
+  });
+}
+
+var acc2 = document.getElementsByClassName("accordion2");
+var i;
+
+for (i = 0; i < acc2.length; i++) {
+  acc2[i].addEventListener("click", function() {
+    /* Toggle between adding and removing the "active" class,
+    to highlight the button that controls the panel*/
+    this.classList.toggle("active");
+
+    /* Toggle between hiding and showing the active panel*/
+    var panel = this.nextElementSibling;
+    if (panel.style.display === "block") {
+      panel.style.display = "none";
+    } else {
+      panel.style.display = "block";
+    }
+  });
+}
+
+// MENU BUTTONS
+
+function daSindh(){
+	var checkBox = document.getElementById("layer1");
+	if (checkBox.checked == true){
+		map.setLayoutProperty('sd', 'visibility', 'visible');
+	}else{
+		map.setLayoutProperty('sd', 'visibility', 'none');
+	}
+};
+
+function daSet(){
+	var checkBox = document.getElementById("layer2");
+	if (checkBox.checked == true){
+		map.setLayoutProperty('settlement', 'visibility', 'visible');
+	}else{
+		map.setLayoutProperty('settlement', 'visibility', 'none');
+	}
+};
+
+function daRoad(){
+	var checkBox = document.getElementById("layer3");
+	if (checkBox.checked == true){
+		map.setLayoutProperty('roads', 'visibility', 'visible');
+	}else{
+		map.setLayoutProperty('roads', 'visibility', 'none');
+	}
+};
+
+function daRegu(){
+	var checkBox = document.getElementById("layer4");
+	if (checkBox.checked == true){
+		map.setLayoutProperty('regulate', 'visibility', 'visible');
+	}else{
+		map.setLayoutProperty('regulate', 'visibility', 'none');
+	}
+};
+
+function daIrrigate(){
+	var checkBox = document.getElementById("layer5");
+	if (checkBox.checked == true){
+		map.setLayoutProperty('irrigate', 'visibility', 'visible');
+	}else{
+		map.setLayoutProperty('irrigate', 'visibility', 'none');
+	}
+};
+
+	function dalbod(){
+		var checkBox = document.getElementById("layer6");
+		if (checkBox.checked == true){
+			map.setLayoutProperty('LBOD', 'visibility', 'visible');
+		}else{
+			map.setLayoutProperty('LBOD', 'visibility', 'none');
+		}
+	};
+
+	function daDrain(){
+		var checkBox = document.getElementById("layer7");
+		if (checkBox.checked == true){
+			document.getElementById("layer8").checked = true;
+			document.getElementById("layer9").checked = true;
+			document.getElementById("layer10").checked = true;
+			document.getElementById("layer11").checked = true;
+			document.getElementById("layer12").checked = true;
+				daDrain1()
+				daDrain2()
+				daDrain3()
+				daDrain4()
+				daDrain5()
+	}else{
+		document.getElementById("layer8").checked = false;
+		document.getElementById("layer9").checked = false;
+		document.getElementById("layer10").checked = false;
+		document.getElementById("layer11").checked = false;
+		document.getElementById("layer12").checked = false;
+			daDrain1()
+			daDrain2()
+			daDrain3()
+			daDrain4()
+			daDrain5()
+	}
+};
+
+	function daDrain1(){
+		var checkBox = document.getElementById("layer8");
+		if (checkBox.checked == true){
+					map.setLayoutProperty('drain1', 'visibility', 'visible');
+			}else{
+					map.setLayoutProperty('drain1', 'visibility', 'none');
+			}
+		};
+		function daDrain2(){
+			var checkBox = document.getElementById("layer9");
+			if (checkBox.checked == true){
+				map.setLayoutProperty('drain2', 'visibility', 'visible');
+		}else{
+				map.setLayoutProperty('drain2', 'visibility', 'none');
+				}
+			};
+			function daDrain3(){
+				var checkBox = document.getElementById("layer10");
+				if (checkBox.checked == true){
+					map.setLayoutProperty('drain3', 'visibility', 'visible');
+			}else{
+					map.setLayoutProperty('drain3', 'visibility', 'none');
+					}
+				};
+				function daDrain4(){
+					var checkBox = document.getElementById("layer11");
+					if (checkBox.checked == true){
+						map.setLayoutProperty('drain4', 'visibility', 'visible');
+				}else{
+						map.setLayoutProperty('drain4', 'visibility', 'none');
+						}
+					};	function daDrain5(){
+							var checkBox = document.getElementById("layer12");
+							if (checkBox.checked == true){
+								map.setLayoutProperty('drain5', 'visibility', 'visible');
+						}else{
+								map.setLayoutProperty('drain5', 'visibility', 'none');
+								}
+							};
+
+							function daLevee(){
+								var checkBox = document.getElementById("layer13");
+								if (checkBox.checked == true){
+									map.setLayoutProperty('levee', 'visibility', 'visible');
+								}else{
+									map.setLayoutProperty('levee', 'visibility', 'none');
+								}
+							};
+
+	function daTimeline(){
+		var checkBox = document.getElementById("layer14");
+		if (checkBox.checked == true){
+			document.getElementById("layer15").checked = false;
+			document.getElementById("layer24").checked = false;
+			document.getElementById("timeline").style.display = 'block';
+			document.getElementById("timeline2").style.display = 'none';
+			document.getElementById("timeline3").style.display = 'none';
+			map.setLayoutProperty('0m', 'visibility', 'visible');
+			document.getElementById("TextInfo").textContent = "2020 MSL (mean sea level)";
+			document.getElementById("textholder").style.display ="block";
+		}else{
+			document.getElementById("timeline").style.display = 'none';
+			document.getElementById("textholder").style.display ="none";
+			map.setLayoutProperty('0m', 'visibility', 'none');
+			map.setLayoutProperty('1m', 'visibility', 'none');
+			map.setLayoutProperty('2m', 'visibility', 'none');
+			map.setLayoutProperty('3m', 'visibility', 'none');
+			document.getElementById("slider").value = '0';
+		}
+	};
+
+	function daFlow(){
+		var checkBox = document.getElementById("layer15");
+		if (checkBox.checked == true){
+			document.getElementById("layer14").checked = false;
+			document.getElementById("layer24").checked = false;
+			document.getElementById("timeline2").style.display = 'block';
+			document.getElementById("timeline").style.display = 'none';
+			document.getElementById("timeline3").style.display = 'none';
+			map.setLayoutProperty('VIIRS_20200927_20201001_Perma-b4hugr', 'visibility', 'visible')
+			document.getElementById("TextInfo").textContent = "Permanent water (VIIRS Satellite derived product)";
+			document.getElementById("textholder").style.display ="block";
+
+		}else{
+			document.getElementById("timeline2").style.display = 'none';
+			document.getElementById("textholder").style.display ="none";
+			map.setLayoutProperty('VIIRS_20200927_20201001_Perma-b4hugr', 'visibility', 'none')
+			map.setLayoutProperty('VIIRS_20200927_20201001_Flood-bif3po', 'visibility', 'none')
+			map.setLayoutProperty('floodmax', 'visibility', 'none')
+			document.getElementById("slider2").value = '0';
+		}
+	};
+
+	function daGMW(){
+		var checkBox = document.getElementById("layer24");
+		if (checkBox.checked == true){
+			document.getElementById("layer14").checked = false;
+			document.getElementById("layer15").checked = false;
+			document.getElementById("timeline3").style.display = 'block';
+			document.getElementById("timeline2").style.display = 'none';
+			document.getElementById("timeline").style.display = 'none';
+			map.setLayoutProperty('1996', 'visibility', 'visible')
+			document.getElementById("TextInfo").textContent = "1996";
+			document.getElementById("textholder").style.display ="block";
+
+		}else{
+			document.getElementById("timeline3").style.display = 'none';
+			document.getElementById("textholder").style.display ="none";
+			map.setLayoutProperty('1996', 'visibility', 'none')
+			map.setLayoutProperty('2007', 'visibility', 'none')
+			map.setLayoutProperty('2008', 'visibility', 'none')
+			map.setLayoutProperty('2009', 'visibility', 'none')
+			map.setLayoutProperty('2010', 'visibility', 'none')
+			map.setLayoutProperty('2015', 'visibility', 'none')
+			map.setLayoutProperty('2016', 'visibility', 'none')
+			document.getElementById("slider3").value = '0';
+		}
+	};
+
+	function daLake(){
+		var checkBox = document.getElementById("layer16");
+		if (checkBox.checked == true){
+			map.setLayoutProperty('lakes', 'visibility', 'visible');
+		}else{
+			map.setLayoutProperty('lakes', 'visibility', 'none');
+		}
+	};
+
+	function daMang(){
+		var checkBox = document.getElementById("layer17");
+		if (checkBox.checked == true){
+			map.setLayoutProperty('mang', 'visibility', 'visible');
+		}else{
+			map.setLayoutProperty('mang', 'visibility', 'none');
+		}
+	};
+	function daFor(){
+		var checkBox = document.getElementById("layer18");
+		if (checkBox.checked == true){
+			map.setLayoutProperty('forest', 'visibility', 'visible');
+		}else{
+			map.setLayoutProperty('forest', 'visibility', 'none');
+		}
+	};
+
+	function daDepres(){
+		var checkBox = document.getElementById("layer19");
+		if (checkBox.checked == true){
+			map.setLayoutProperty('depres', 'visibility', 'visible');
+		}else{
+			map.setLayoutProperty('depres', 'visibility', 'none');
+		}
+	};
+
+
+	function daVid1(){
+		var checkBox = document.getElementById("layer20");
+		if (checkBox.checked == true){
+			map.setLayoutProperty('videos', 'visibility', 'visible');
+		}else{
+			map.setLayoutProperty('videos', 'visibility', 'none');
+		}
+	};
+
+	function daImage(){
+		var checkBox = document.getElementById("layer21");
+		if (checkBox.checked == true){
+			map.setPaintProperty('slrbathtub3mv4-cg6vkd', 'raster-opacity', 1)
+		}else{
+			map.setPaintProperty('slrbathtub3mv4-cg6vkd', 'raster-opacity', 0)
+		}
+	};
+
+	//TOOLS BUTTONS
+
+function daDist(){
+	var checkBox = document.getElementById("layer23");
+	if (checkBox.checked == true){
+		document.getElementById("disBox").style.display = 'block';
+		document.getElementById("layer22").checked = false;
+		document.getElementById("locaBox").style.display = 'none';
+		document.getElementById("lng").textContent = "";
+		document.getElementById("lat").textContent = "";
+		document.getElementById("ele").textContent = "";
+		marker.remove();
+	}else{
+		document.getElementById("disBox").style.display = 'none';
+		distanceContainer.innerHTML = '';
+		map.getSource('geojson').setData({
+		'type': 'FeatureCollection',
+		'features': []
+	});
+	geojson.features = [];
+		//map.removeSource("geojson");
+
+	}
+};
+
+	//DISTANCE MEASURING TOOL
+
+	var distanceContainer = document.getElementById('distance');
+
+	var geojson = {
+	'type': 'FeatureCollection',
+	'features': []
+	};
+
+	var linestring = {
+'type': 'Feature',
+'geometry': {
+'type': 'LineString',
+'coordinates': []
+}
+};
+map.on('load', function () {
+map.addSource('geojson', {
+'type': 'geojson',
+'data': geojson
+});
+
+// Add styles to the map
+map.addLayer({
+id: 'measure-points',
+type: 'circle',
+source: 'geojson',
+paint: {
+'circle-radius': 5,
+'circle-color': '#000'
+},
+filter: ['in', '$type', 'Point']
+});
+
+map.addLayer({
+id: 'measure-lines',
+type: 'line',
+source: 'geojson',
+layout: {
+'line-cap': 'round',
+'line-join': 'round'
+},
+paint: {
+'line-color': '#000',
+'line-width': 2.5
+},
+filter: ['in', '$type', 'LineString']
+});
+
+
+map.on('click', function (e) {
+
+	var checkBox1 = document.getElementById("layer23");
+	if (checkBox1.checked == true){
+
+var features = map.queryRenderedFeatures(e.point, {
+layers: ['measure-points']
+
+});
+
+}
+
+// Remove the linestring from the group
+// So we can redraw it based on the points collection
+if (geojson.features.length > 1) geojson.features.pop();
+
+// Clear the Distance container to populate it with a new value
+distanceContainer.innerHTML = '';
+
+// If a feature was clicked, remove it from the map
+if (features.length) {
+var id = features[0].properties.id;
+geojson.features = geojson.features.filter(function (point) {
+return point.properties.id !== id;
+});
+} else {
+var point = {
+'type': 'Feature',
+'geometry': {
+'type': 'Point',
+'coordinates': [e.lngLat.lng, e.lngLat.lat]
+},
+'properties': {
+'id': String(new Date().getTime())
+}
+};
+
+geojson.features.push(point);
+}
+
+if (geojson.features.length > 1) {
+linestring.geometry.coordinates = geojson.features.map(
+function (point) {
+return point.geometry.coordinates;
+}
+);
+
+geojson.features.push(linestring);
+
+// Populate the distanceContainer with total distance
+var value = document.createElement('pre');
+value.textContent =
+'Total distance: ' +
+turf.length(linestring).toLocaleString() +
+'km';
+distanceContainer.appendChild(value);
+}
+
+map.getSource('geojson').setData(geojson);
+});
+});
+
+var checkBox2 = document.getElementById("layer23");
+if (checkBox2.checked == true){
+map.on('mousemove', function (e) {
+
+var features = map.queryRenderedFeatures(e.point, {
+layers: ['measure-points']
+});
+// UI indicator for clicking/hovering a point on the map
+map.getCanvas().style.cursor = features.length
+? 'pointer'
+: 'crosshair';
+
+});
+}
+//END OF DISTANCE TOOL CODE
+
+	// VIDEO POPUPS
+	map.on('click', 'videos', function (e) {
+var coordinates = e.features[0].geometry.coordinates.slice();
+var description = e.features[0].properties.description;
+while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+}
+
+new mapboxgl.Popup({className: 'mapboxgl-popup-content'})
+.setLngLat(coordinates)
+.setHTML(description)
+.addTo(map);
+});
+
+map.on('mouseenter', 'videos', function () {
+map.getCanvas().style.cursor = 'pointer';
+});
+
+map.on('mouseleave', 'videos', function () {
+map.getCanvas().style.cursor = '';
+});
+
+//GET ELEVATION DATA
+var marker = new mapboxgl.Marker({
+  'color': '#314ccd'
+});
+
+var lng;
+var lat;
+
+var lngDisplay = document.getElementById('lng');
+var latDisplay = document.getElementById('lat');
+var eleDisplay = document.getElementById('ele');
+
+map.on('click', function(e){
+	var checkBox = document.getElementById("layer22");
+	if (checkBox.checked == true){
+	lng = e.lngLat.lng;
+	lat = e.lngLat.lat;
+	marker.setLngLat(e.lngLat).addTo(map);
+	getElevation();
+	}
+})
+
+function daLoca(){
+	var checkBox = document.getElementById("layer22");
+	if (checkBox.checked == true){
+		document.getElementById("locaBox").style.display = 'block';
+		document.getElementById("layer23").checked = false;
+
+		document.getElementById("disBox").style.display = 'none';
+		distanceContainer.innerHTML = '';
+		map.getSource('geojson').setData({
+		'type': 'FeatureCollection',
+		'features': []
+	});
+		geojson.features = [];
+	}else{
+		document.getElementById("locaBox").style.display = 'none';
+		document.getElementById("lng").textContent = "";
+		document.getElementById("lat").textContent = "";
+		document.getElementById("ele").textContent = "";
+		marker.remove();
+	}
+};
+
+function getElevation() {
+  // make API request
+  //var query = 'https://api.mapbox.com/v4/mapbox.mapbox-terrain-v2/tilequery/' + lng + ',' + lat + '.json?layers=contour&limit=50&access_token=' + mapboxgl.accessToken;
+	var query = 'https://api.mapbox.com/v4/fooldome.2uq6zp5k/tilequery/' + lng + ',' + lat + '.json?radius=850&access_token=' + mapboxgl.accessToken;
+	$.ajax({
+    method: 'GET',
+    url: query,
+  }).done(function(data) {
+    // Display the longitude and latitude values
+    lngDisplay.textContent = lng.toFixed(2);
+    latDisplay.textContent = lat.toFixed(2);
+    // Get all the returned features
+    var allFeatures = data.features;
+    // Create an empty array to add elevation data to
+    var elevations = [];
+    // For each returned feature, add elevation data to the elevations array
+    for (i = 0; i < allFeatures.length; i++) {
+      elevations.push(allFeatures[i].properties.ELEVATION);
+    }
+    // In the elevations array, find the largest value
+    var highestElevation = Math.max(...elevations);
+    // Display the largest elevation value
+    eleDisplay.textContent = highestElevation + ' meters';
+  });
+}
+
+// SEA RISE TIMELINE CONTENT
+var meters =
+['0',
+'1',
+'2',
+'3'];
+
+function filterBy(meters){
+	var filters=['==', 'meters', meters];
+		document.getElementById('meters').textContent = meters[meters];
+};
+
+filterBy(0);
+
+document
+	.getElementById('slider')
+	.addEventListener('input', function (e){
+	var meters = parseInt(e.target.value, 0);
+	filterBy(meters);
+
+		if (meters == 0){
+			map.setLayoutProperty('0m', 'visibility', 'visible');
+			map.setLayoutProperty('1m', 'visibility', 'none');
+			map.setLayoutProperty('2m', 'visibility', 'none');
+			map.setLayoutProperty('3m', 'visibility', 'none');
+			document.getElementById("TextInfo").textContent = "2020 MSL (mean sea level)";
+			document.getElementById("textholder").style.display ="block";
+		}
+		if (meters == 1){
+			map.setLayoutProperty('1m', 'visibility', 'visible');
+			map.setLayoutProperty('2m', 'visibility', 'none');
+			map.setLayoutProperty('3m', 'visibility', 'none');
+			document.getElementById("TextInfo").textContent = "2100 MSL Global Sea Level Rise (1m IPCC climate scenario RCP8.5)";
+			document.getElementById("textholder").style.display ="block";
+		}
+		if (meters == 2){
+				map.setLayoutProperty('2m', 'visibility', 'visible');
+				map.setLayoutProperty('3m', 'visibility', 'none');
+				document.getElementById("TextInfo").textContent = "2100 MSL plus 1m representing high tide";
+				document.getElementById("textholder").style.display ="block";
+		}
+		if (meters == 3){
+			map.setLayoutProperty('3m', 'visibility', 'visible');
+			document.getElementById("TextInfo").textContent = "2100 MSL plus 2m representing high tide and storm";
+			document.getElementById("textholder").style.display ="block";
+		}
+	});
+
+	// FLOOD EVENT TIMELINE CONTENT
+	var area =
+	['0',
+	'1',
+	'2'];
+
+	function filterTo(area){
+		var filters=['==', 'area', area];
+			document.getElementById('area').textContent = area[area];
+	};
+
+	filterTo(0);
+
+	document
+		.getElementById('slider2')
+		.addEventListener('input', function (e){
+		var area = parseInt(e.target.value, 0);
+		filterTo(area);
+
+			if (area == 0){
+				map.setLayoutProperty('VIIRS_20200927_20201001_Perma-b4hugr', 'visibility', 'visible')
+				map.setLayoutProperty('VIIRS_20200927_20201001_Flood-bif3po', 'visibility', 'none')
+				map.setLayoutProperty('floodmax', 'visibility', 'none')
+				document.getElementById("TextInfo").textContent = "Permanent water (VIIRS Satellite derived product)";
+				document.getElementById("textholder").style.display ="block";
+			}
+			if (area == 1){
+				map.setLayoutProperty('VIIRS_20200927_20201001_Perma-b4hugr', 'visibility', 'visible')
+				map.setLayoutProperty('VIIRS_20200927_20201001_Flood-bif3po', 'visibility', 'visible')
+				map.setLayoutProperty('floodmax', 'visibility', 'none')
+				document.getElementById("TextInfo").textContent = "Flood Risk 2020 (VIIRS Satellite derived product)";
+				document.getElementById("textholder").style.display ="block";
+			}
+			if (area == 2){
+				map.setLayoutProperty('VIIRS_20200927_20201001_Perma-b4hugr', 'visibility', 'visible')
+				map.setLayoutProperty('VIIRS_20200927_20201001_Flood-bif3po', 'visibility', 'visible')
+				map.setLayoutProperty('floodmax', 'visibility', 'visible')
+				document.getElementById("TextInfo").textContent = "Flood Event 2020 (Cloud2Street Flood Satellite derived product)(Visible below zoom level 10)";
+				document.getElementById("textholder").style.display ="block";
+			}
+		});
+
+		// GLOBAL MANGROVE WATCH TIMELINE CONTENT
+		var grow =
+		['0',
+		'1',
+		'2'];
+
+		function filterTo(grow){
+			var filters=['==', 'grow', grow];
+				document.getElementById('grow').textContent = grow[grow];
+		};
+
+		filterTo(0);
+
+		document
+			.getElementById('slider3')
+			.addEventListener('input', function (e){
+			var grow = parseInt(e.target.value, 0);
+			filterTo(grow);
+
+				if (grow == 0){
+					map.setLayoutProperty('1996', 'visibility', 'visible')
+					map.setLayoutProperty('2007', 'visibility', 'none')
+					map.setLayoutProperty('2008', 'visibility', 'none')
+					map.setLayoutProperty('2009', 'visibility', 'none')
+					map.setLayoutProperty('2010', 'visibility', 'none')
+					map.setLayoutProperty('2015', 'visibility', 'none')
+					map.setLayoutProperty('2016', 'visibility', 'none')
+					document.getElementById("TextInfo").textContent = "1996";
+					document.getElementById("textholder").style.display ="block";
+				}
+				if (grow == 1){
+					map.setLayoutProperty('1996', 'visibility', 'none')
+					map.setLayoutProperty('2007', 'visibility', 'visible')
+					map.setLayoutProperty('2008', 'visibility', 'none')
+					map.setLayoutProperty('2009', 'visibility', 'none')
+					map.setLayoutProperty('2010', 'visibility', 'none')
+					map.setLayoutProperty('2015', 'visibility', 'none')
+					map.setLayoutProperty('2016', 'visibility', 'none')
+					document.getElementById("TextInfo").textContent = "2007";
+					document.getElementById("textholder").style.display ="block";
+				}
+				if (grow == 2){
+					map.setLayoutProperty('1996', 'visibility', 'none')
+					map.setLayoutProperty('2007', 'visibility', 'none')
+					map.setLayoutProperty('2008', 'visibility', 'visible')
+					map.setLayoutProperty('2009', 'visibility', 'none')
+					map.setLayoutProperty('2010', 'visibility', 'none')
+					map.setLayoutProperty('2015', 'visibility', 'none')
+					map.setLayoutProperty('2016', 'visibility', 'none')
+					document.getElementById("TextInfo").textContent = "2008";
+					document.getElementById("textholder").style.display ="block";
+				}
+				if (grow == 3){
+					map.setLayoutProperty('1996', 'visibility', 'none')
+					map.setLayoutProperty('2007', 'visibility', 'none')
+					map.setLayoutProperty('2008', 'visibility', 'none')
+					map.setLayoutProperty('2009', 'visibility', 'visible')
+					map.setLayoutProperty('2010', 'visibility', 'none')
+					map.setLayoutProperty('2015', 'visibility', 'none')
+					map.setLayoutProperty('2016', 'visibility', 'none')
+					document.getElementById("TextInfo").textContent = "2009";
+					document.getElementById("textholder").style.display ="block";
+				}
+				if (grow == 4){
+					map.setLayoutProperty('1996', 'visibility', 'none')
+					map.setLayoutProperty('2007', 'visibility', 'none')
+					map.setLayoutProperty('2008', 'visibility', 'none')
+					map.setLayoutProperty('2009', 'visibility', 'none')
+					map.setLayoutProperty('2010', 'visibility', 'visible')
+					map.setLayoutProperty('2015', 'visibility', 'none')
+					map.setLayoutProperty('2016', 'visibility', 'none')
+					document.getElementById("TextInfo").textContent = "2010";
+					document.getElementById("textholder").style.display ="block";
+				}
+				if (grow == 5){
+					map.setLayoutProperty('1996', 'visibility', 'none')
+					map.setLayoutProperty('2007', 'visibility', 'none')
+					map.setLayoutProperty('2008', 'visibility', 'none')
+					map.setLayoutProperty('2009', 'visibility', 'none')
+					map.setLayoutProperty('2010', 'visibility', 'none')
+					map.setLayoutProperty('2015', 'visibility', 'visible')
+					map.setLayoutProperty('2016', 'visibility', 'none')
+					document.getElementById("TextInfo").textContent = "2015";
+					document.getElementById("textholder").style.display ="block";
+				}
+				if (grow == 6){
+					map.setLayoutProperty('1996', 'visibility', 'none')
+					map.setLayoutProperty('2007', 'visibility', 'none')
+					map.setLayoutProperty('2008', 'visibility', 'none')
+					map.setLayoutProperty('2009', 'visibility', 'none')
+					map.setLayoutProperty('2010', 'visibility', 'none')
+					map.setLayoutProperty('2015', 'visibility', 'none')
+					map.setLayoutProperty('2016', 'visibility', 'visible')
+					document.getElementById("TextInfo").textContent = "2016";
+					document.getElementById("textholder").style.display ="block";
+				}
+			});
+
+	</script>
+	</body>
+	</html>
