@@ -1999,7 +1999,8 @@ function getElevation() {
   }).done(function(data) {
     lngDisplay.textContent = lng.toFixed(2);
     latDisplay.textContent = lat.toFixed(2);
-    var elevations = [];
+	var allFeatures = data.features;
+	    var elevations = [];
     for (i = 0; i < allFeatures.length; i++) {
       elevations.push(allFeatures[i].properties.ELEVATION);
     }
