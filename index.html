@@ -315,12 +315,6 @@
 <div class="wrapper">
 <div class="loader" id="loading"></div>
 
-<div id="textholder" class="Textoverlay">
-	<div class="Textoverlay-inner">
-		<span></span><label id="TextInfo"></label>
-	</div>
-</div>
-
 		<!-- SplashScreen -->
  <div id ="splash1" class="splashUnderlay">
 		<div id ="splash2" class="ImgSplash">	<img src="img/resilentCoastSplash2.png">
@@ -369,19 +363,28 @@
 				<input class="accordion2" id="layer14" type="checkbox" onclick="daTimeline()"> Sea Level Rise
 					<div id="timeline" class="panel2">
 					<label id="meters"></label>
-					<input id="slider" type="range" min="0" max="2" step="1" value="0">
+					<input id="slider" type="range" min="0" max="2" step="1" value="0"><br>
+					<div id="textholder1">
+					<span></span><label id="TextInfo1"></label>
+					</div>
 				</div><br>
 
 				<input class="accordion2" id="layer15" type="checkbox" onclick="daFlow()"> Flood Events
 				<div id="timeline2" class="panel2">
 				<label id="area"></label>
 				<input id="slider2" type="range" min="0" max="2" step="1" value="0">
+				<div id="textholder2">
+				<span></span><label id="TextInfo2"></label>
+				</div>
 			</div><br>
 
 				<input class="accordion2" id="layer24" type="checkbox" onclick="daGMW()"> Mangrove Forest
 				<div id="timeline3" class="panel2">
 				<label id="grow"></label>
 				<input id="slider3" type="range" min="0" max="6" step="1" value="0">
+				<div id="textholder3">
+				<span></span><label id="TextInfo3"></label>
+				</div>
 			</div><br>
 
 				<input id="layer19" type="checkbox" onclick="daDepres()"> Geo-depressions <br>
@@ -1680,12 +1683,12 @@ function daTimeline(){
 		var checkBox = document.getElementById("layer14");
 		if (checkBox.checked == true){
 			map.setLayoutProperty('0m', 'visibility', 'visible');
-			document.getElementById("TextInfo").textContent = "1 in 2 year flood event for 2020";
-			document.getElementById("textholder").style.display ="block";
+			document.getElementById("TextInfo1").textContent = "1 in 2 year flood event for 2020";
+			document.getElementById("textholder1").style.display ="block";
 			document.getElementById("timeline").style.display = 'none';
 		}else{
 			document.getElementById("timeline").style.display = 'block';
-			document.getElementById("textholder").style.display ="none";
+			document.getElementById("textholder1").style.display ="none";
 			map.setLayoutProperty('0m', 'visibility', 'none');
 			map.setLayoutProperty('1m', 'visibility', 'none');
 			map.setLayoutProperty('2m', 'visibility', 'none');
@@ -1698,12 +1701,12 @@ function daTimeline(){
 		if (checkBox.checked == true){
 		document.getElementById("timeline2").style.display = 'none';
 			map.setLayoutProperty('VIIRS_20200927_20201001_Perma-b4hugr', 'visibility', 'visible')
-			document.getElementById("TextInfo").textContent = "Permanent water (VIIRS Satellite derived product)";
-			document.getElementById("textholder").style.display ="block";
+			document.getElementById("TextInfo2").textContent = "Permanent water (VIIRS Satellite derived product)";
+			document.getElementById("textholder2").style.display ="block";
 
 		}else{
 document.getElementById("timeline2").style.display = 'block';
-			document.getElementById("textholder").style.display ="none";
+			document.getElementById("textholder2").style.display ="none";
 			map.setLayoutProperty('VIIRS_20200927_20201001_Perma-b4hugr', 'visibility', 'none')
 			map.setLayoutProperty('VIIRS_20200927_20201001_Flood-bif3po', 'visibility', 'none')
 			map.setLayoutProperty('floodmax', 'visibility', 'none')
@@ -1716,12 +1719,12 @@ document.getElementById("timeline2").style.display = 'block';
 		if (checkBox.checked == true){
 			document.getElementById("timeline3").style.display = 'none';
 			map.setLayoutProperty('1996', 'visibility', 'visible')
-			document.getElementById("TextInfo").textContent = "1996";
-			document.getElementById("textholder").style.display ="block";
+			document.getElementById("TextInfo3").textContent = "1996";
+			document.getElementById("textholder3").style.display ="block";
 
 		}else{
 			document.getElementById("timeline3").style.display = 'block';
-			document.getElementById("textholder").style.display ="none";
+			document.getElementById("textholder3").style.display ="none";
 			map.setLayoutProperty('1996', 'visibility', 'none')
 			map.setLayoutProperty('2007', 'visibility', 'none')
 			map.setLayoutProperty('2008', 'visibility', 'none')
@@ -2026,19 +2029,19 @@ document
 			map.setLayoutProperty('0m', 'visibility', 'visible');
 			map.setLayoutProperty('1m', 'visibility', 'none');
 			map.setLayoutProperty('2m', 'visibility', 'none');
-			document.getElementById("TextInfo").textContent = "1 in 2 year flood event for 2020";
-			document.getElementById("textholder").style.display ="block";
+			document.getElementById("TextInfo1").textContent = "1 in 2 year flood event for 2020";
+			document.getElementById("textholder1").style.display ="block";
 		}
 		if (meters == 1){
 			map.setLayoutProperty('1m', 'visibility', 'visible');
 			map.setLayoutProperty('2m', 'visibility', 'none');
-			document.getElementById("TextInfo").textContent = "1 in 2 year flood event for 2050";
-			document.getElementById("textholder").style.display ="block";
+			document.getElementById("TextInfo1").textContent = "1 in 2 year flood event for 2050";
+			document.getElementById("textholder1").style.display ="block";
 		}
 		if (meters == 2){
 				map.setLayoutProperty('2m', 'visibility', 'visible');
-				document.getElementById("TextInfo").textContent = "1 in 2 year flood event for 2100";
-				document.getElementById("textholder").style.display ="block";
+				document.getElementById("TextInfo1").textContent = "1 in 2 year flood event for 2100";
+				document.getElementById("textholder1").style.display ="block";
 		}
 	});
 
@@ -2065,22 +2068,22 @@ document
 				map.setLayoutProperty('VIIRS_20200927_20201001_Perma-b4hugr', 'visibility', 'visible')
 				map.setLayoutProperty('VIIRS_20200927_20201001_Flood-bif3po', 'visibility', 'none')
 				map.setLayoutProperty('floodmax', 'visibility', 'none')
-				document.getElementById("TextInfo").textContent = "Permanent water (VIIRS Satellite derived product)";
-				document.getElementById("textholder").style.display ="block";
+				document.getElementById("TextInfo2").textContent = "Permanent water (VIIRS Satellite derived product)";
+				document.getElementById("textholder2").style.display ="block";
 			}
 			if (area == 1){
 				map.setLayoutProperty('VIIRS_20200927_20201001_Perma-b4hugr', 'visibility', 'visible')
 				map.setLayoutProperty('VIIRS_20200927_20201001_Flood-bif3po', 'visibility', 'visible')
 				map.setLayoutProperty('floodmax', 'visibility', 'none')
-				document.getElementById("TextInfo").textContent = "Flood Risk 2020 (VIIRS Satellite derived product)";
-				document.getElementById("textholder").style.display ="block";
+				document.getElementById("TextInfo2").textContent = "Flood Risk 2020 (VIIRS Satellite derived product)";
+				document.getElementById("textholder2").style.display ="block";
 			}
 			if (area == 2){
 				map.setLayoutProperty('VIIRS_20200927_20201001_Perma-b4hugr', 'visibility', 'visible')
 				map.setLayoutProperty('VIIRS_20200927_20201001_Flood-bif3po', 'visibility', 'visible')
 				map.setLayoutProperty('floodmax', 'visibility', 'visible')
-				document.getElementById("TextInfo").textContent = "Flood Event 2020 (Cloud2Street Flood Satellite derived product)(Visible below zoom level 10)";
-				document.getElementById("textholder").style.display ="block";
+				document.getElementById("TextInfo2").textContent = "Flood Event 2020 (Cloud2Street Flood Satellite derived product)(Visible below zoom level 10)";
+				document.getElementById("textholder2").style.display ="block";
 			}
 		});
 
@@ -2111,8 +2114,8 @@ document
 					map.setLayoutProperty('2010', 'visibility', 'none')
 					map.setLayoutProperty('2015', 'visibility', 'none')
 					map.setLayoutProperty('2016', 'visibility', 'none')
-					document.getElementById("TextInfo").textContent = "1996";
-					document.getElementById("textholder").style.display ="block";
+					document.getElementById("TextInfo3").textContent = "1996";
+					document.getElementById("textholder3").style.display ="block";
 				}
 				if (grow == 1){
 					map.setLayoutProperty('1996', 'visibility', 'none')
@@ -2122,8 +2125,8 @@ document
 					map.setLayoutProperty('2010', 'visibility', 'none')
 					map.setLayoutProperty('2015', 'visibility', 'none')
 					map.setLayoutProperty('2016', 'visibility', 'none')
-					document.getElementById("TextInfo").textContent = "2007";
-					document.getElementById("textholder").style.display ="block";
+					document.getElementById("TextInfo3").textContent = "2007";
+					document.getElementById("textholder3").style.display ="block";
 				}
 				if (grow == 2){
 					map.setLayoutProperty('1996', 'visibility', 'none')
@@ -2133,8 +2136,8 @@ document
 					map.setLayoutProperty('2010', 'visibility', 'none')
 					map.setLayoutProperty('2015', 'visibility', 'none')
 					map.setLayoutProperty('2016', 'visibility', 'none')
-					document.getElementById("TextInfo").textContent = "2008";
-					document.getElementById("textholder").style.display ="block";
+					document.getElementById("TextInfo3").textContent = "2008";
+					document.getElementById("textholder3").style.display ="block";
 				}
 				if (grow == 3){
 					map.setLayoutProperty('1996', 'visibility', 'none')
@@ -2144,8 +2147,8 @@ document
 					map.setLayoutProperty('2010', 'visibility', 'none')
 					map.setLayoutProperty('2015', 'visibility', 'none')
 					map.setLayoutProperty('2016', 'visibility', 'none')
-					document.getElementById("TextInfo").textContent = "2009";
-					document.getElementById("textholder").style.display ="block";
+					document.getElementById("TextInfo3").textContent = "2009";
+					document.getElementById("textholder3").style.display ="block";
 				}
 				if (grow == 4){
 					map.setLayoutProperty('1996', 'visibility', 'none')
@@ -2155,8 +2158,8 @@ document
 					map.setLayoutProperty('2010', 'visibility', 'visible')
 					map.setLayoutProperty('2015', 'visibility', 'none')
 					map.setLayoutProperty('2016', 'visibility', 'none')
-					document.getElementById("TextInfo").textContent = "2010";
-					document.getElementById("textholder").style.display ="block";
+					document.getElementById("TextInfo3").textContent = "2010";
+					document.getElementById("textholder3").style.display ="block";
 				}
 				if (grow == 5){
 					map.setLayoutProperty('1996', 'visibility', 'none')
@@ -2166,8 +2169,8 @@ document
 					map.setLayoutProperty('2010', 'visibility', 'none')
 					map.setLayoutProperty('2015', 'visibility', 'visible')
 					map.setLayoutProperty('2016', 'visibility', 'none')
-					document.getElementById("TextInfo").textContent = "2015";
-					document.getElementById("textholder").style.display ="block";
+					document.getElementById("TextInfo3").textContent = "2015";
+					document.getElementById("textholder3").style.display ="block";
 				}
 				if (grow == 6){
 					map.setLayoutProperty('1996', 'visibility', 'none')
@@ -2177,8 +2180,8 @@ document
 					map.setLayoutProperty('2010', 'visibility', 'none')
 					map.setLayoutProperty('2015', 'visibility', 'none')
 					map.setLayoutProperty('2016', 'visibility', 'visible')
-					document.getElementById("TextInfo").textContent = "2016";
-					document.getElementById("textholder").style.display ="block";
+					document.getElementById("TextInfo3").textContent = "2016";
+					document.getElementById("textholder3").style.display ="block";
 				}
 			});
 
