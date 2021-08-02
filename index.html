@@ -421,6 +421,8 @@
 		</div> <br><br>
 </div>
 
+<!--Distance and Evlevation data window and buttons-->
+		
 <div class="bottonBtn">
 <div class ="eleInfo" id="disBox">
 <div>Distance: <span id="distance"></span></div>
@@ -445,16 +447,18 @@
 
 	<script>
 
-	/// MAPBOX LOAD, STYLE & START POSITION
+	/// MAPBOX BOUNDARY LIMITATION
 	var bounds = [
 		[65.187433, 23.074923], //Southwest
 		[70.340418, 26.568921] //NorthEast
 	];
-
+	/// PERSONAL ACCESS TOKEN
 	mapboxgl.accessToken = 'pk.eyJ1IjoiZm9vbGRvbWUiLCJhIjoiY2pxcHJyb2c1MDBzajQzbzZoM2dlaHRkeiJ9.CDXrbrpZqfi6A5bg5mX9TA';
 	const map = new mapboxgl.Map({
 	container: 'map',
+	/// PERSONAL MAPBOX STYLE LINK
 	style: 'mapbox://styles/fooldome/cklgzeaq9039i18o1nrzumbkb',
+	/// MAP STARTING POSITION
 	center: [67.514197, 24.183356],
 	zoom:8.8,
 	//pitch: 78.23,
@@ -462,9 +466,11 @@
 	maxBounds: bounds,
 	antialias: true
 	});
-
+	
+	/// ADDS MAP UI CONTROL
 	map.addControl(new mapboxgl.NavigationControl());
-
+	
+	/// SETUP FOR SIDEBAR SHOW / HIDE BUTTON
 	var x = false;
 	toggleSidebar();
 
